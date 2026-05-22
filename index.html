@@ -2,27 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>BlandChat · local discord-like</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GistChat · shared via .txt file</title>
     <style>
-        /* -------------------- VERY BLAND STYLE -------------------- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background: #e2e2e2;   /* dull grey background */
-            font-family: system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            background: #e2e2e2;
+            font-family: system-ui, 'Segoe UI', sans-serif;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 16px;
         }
-
-        /* main app container — no rounded corners, no shadows, flat */
         .app {
             display: flex;
             width: 1300px;
@@ -30,567 +22,295 @@
             height: 90vh;
             background: #f5f5f5;
             border: 1px solid #b0b0b0;
-            /* no border-radius, no shadow */
         }
-
-        /* ---------- LEFT SIDEBAR (very bland discord-like) ---------- */
         .sidebar {
             width: 260px;
             background: #eaeaea;
             border-right: 1px solid #c0c0c0;
             display: flex;
             flex-direction: column;
-            flex-shrink: 0;
         }
-
-        .server-header {
-            padding: 18px 12px;
-            border-bottom: 1px solid #c0c0c0;
-            background: #e2e2e2;
-        }
-
-        .server-name {
-            font-weight: 600;
-            font-size: 1.1rem;
-            color: #2c2c2c;
-            letter-spacing: 0;
-        }
-
-        .channels-section {
-            flex: 1;
-            padding: 12px 0 0 0;
-        }
-
-        .channels-label {
-            font-size: 0.7rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            padding: 8px 12px;
-            color: #5a5a5a;
-            letter-spacing: 0.5px;
-        }
-
+        .server-header { padding: 18px 12px; border-bottom: 1px solid #c0c0c0; background: #e2e2e2; }
+        .server-name { font-weight: 600; font-size: 1.1rem; color: #2c2c2c; }
+        .channels-section { flex: 1; padding: 12px 0 0 0; }
+        .channels-label { font-size: 0.7rem; font-weight: 500; text-transform: uppercase; padding: 8px 12px; color: #5a5a5a; }
         .channel-item {
-            padding: 8px 12px;
-            margin: 2px 8px;
-            font-size: 0.9rem;
-            color: #2c2c2c;
-            cursor: pointer;
-            background-color: transparent;
-            border: 1px solid transparent;
-            transition: none;
-            font-weight: normal;
+            padding: 8px 12px; margin: 2px 8px; font-size: 0.9rem; color: #2c2c2c;
+            cursor: pointer; border: 1px solid transparent;
         }
-
-        .channel-item:hover {
-            background-color: #d4d4d4;
-            border-color: #b0b0b0;
-        }
-
-        .channel-item.active {
-            background-color: #d0d0d0;
-            border-left: 3px solid #6c6c6c;
-            font-weight: 500;
-            color: #000;
-        }
-
-        .channel-name {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .hash {
-            color: #6e6e6e;
-            font-weight: 500;
-        }
-
-        /* user area */
+        .channel-item:hover { background-color: #d4d4d4; border-color: #b0b0b0; }
+        .channel-item.active { background-color: #d0d0d0; border-left: 3px solid #6c6c6c; }
+        .hash { color: #6e6e6e; }
         .user-area {
-            margin-top: auto;
-            padding: 16px 12px;
-            border-top: 1px solid #c0c0c0;
+            margin-top: auto; padding: 16px 12px; border-top: 1px solid #c0c0c0;
             background: #e2e2e2;
         }
-
-        .nickname-row {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 10px;
-            align-items: center;
-        }
-
-        .nickname-label {
-            font-size: 0.75rem;
-            color: #3a3a3a;
-            font-weight: 500;
-        }
-
-        #nicknameInput {
-            flex: 1;
-            background: white;
-            border: 1px solid #b0b0b0;
-            padding: 6px 8px;
-            font-size: 0.8rem;
-            font-family: inherit;
-            color: #111;
-        }
-
-        #nicknameInput:focus {
-            outline: none;
-            border-color: #7c7c7c;
-        }
-
-        /* ---------- MAIN CHAT AREA ---------- */
-        .chat-main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: #fafafa;
-        }
-
-        .chat-header {
-            padding: 12px 16px;
-            border-bottom: 1px solid #c0c0c0;
-            background: #f0f0f0;
-        }
-
-        .channel-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #1f1f1f;
-        }
-
-        .channel-topic {
-            font-size: 0.7rem;
-            color: #636363;
-            margin-top: 4px;
-        }
-
-        /* messages container */
-        .messages-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            background: #fefefe;
-        }
-
-        .message {
-            display: flex;
-            flex-direction: column;
-            border-bottom: 1px solid #e2e2e2;
-            padding-bottom: 8px;
-        }
-
-        .message-header {
-            display: flex;
-            align-items: baseline;
-            gap: 10px;
-            margin-bottom: 4px;
-        }
-
-        .message-author {
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: #2a2a2a;
-        }
-
-        .message-timestamp {
-            font-size: 0.65rem;
-            color: #8a8a8a;
-        }
-
-        .message-text {
-            font-size: 0.9rem;
-            color: #1a1a1a;
-            word-break: break-word;
-            line-height: 1.4;
-        }
-
-        /* input row (very plain) */
-        .input-area {
-            padding: 12px 16px;
-            background: #f0f0f0;
-            border-top: 1px solid #c0c0c0;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        #messageInput {
-            flex: 1;
-            background: white;
-            border: 1px solid #b0b0b0;
-            padding: 10px 12px;
-            font-family: inherit;
-            font-size: 0.85rem;
-            resize: none;
-            color: #111;
-        }
-
-        #messageInput:focus {
-            outline: none;
-            border-color: #7c7c7c;
-        }
-
-        button {
-            background: #e2e2e2;
-            border: 1px solid #a0a0a0;
-            padding: 8px 16px;
-            font-family: inherit;
-            font-size: 0.8rem;
-            cursor: pointer;
-            color: #222;
-            transition: none;
-        }
-
-        button:hover {
-            background: #d4d4d4;
-            border-color: #8c8c8c;
-        }
-
-        .clear-btn {
-            background: #e6e6e6;
-            border-color: #b0a0a0;
-        }
-
-        .info-note {
-            font-size: 0.65rem;
-            padding: 6px 12px;
-            background: #ececec;
-            color: #6a6a6a;
-            text-align: center;
-            border-top: 1px solid #ccc;
-        }
-
-        /* empty state */
-        .empty-messages {
-            font-size: 0.8rem;
-            color: #7e7e7e;
-            text-align: center;
-            padding: 32px;
-            font-style: normal;
-        }
-
-        /* scrollbar - keep it plain */
-        .messages-container::-webkit-scrollbar {
-            width: 8px;
-            background: #eaeaea;
-        }
-        .messages-container::-webkit-scrollbar-thumb {
-            background: #b0b0b0;
-            border: none;
-        }
+        .nickname-row { display: flex; gap: 8px; align-items: center; }
+        .nickname-label { font-size: 0.75rem; color: #3a3a3a; }
+        #nicknameInput { flex: 1; background: white; border: 1px solid #b0b0b0; padding: 6px 8px; font-size: 0.8rem; }
+        .chat-main { flex: 1; display: flex; flex-direction: column; background: #fafafa; }
+        .chat-header { padding: 12px 16px; border-bottom: 1px solid #c0c0c0; background: #f0f0f0; }
+        .channel-title { font-size: 1rem; font-weight: 600; color: #1f1f1f; }
+        .messages-container { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 14px; background: #fefefe; }
+        .message { border-bottom: 1px solid #e2e2e2; padding-bottom: 8px; }
+        .message-header { display: flex; gap: 10px; margin-bottom: 4px; }
+        .message-author { font-weight: 600; font-size: 0.85rem; color: #2a2a2a; }
+        .message-timestamp { font-size: 0.65rem; color: #8a8a8a; }
+        .message-text { font-size: 0.9rem; color: #1a1a1a; word-break: break-word; }
+        .input-area { padding: 12px 16px; background: #f0f0f0; border-top: 1px solid #c0c0c0; display: flex; gap: 10px; }
+        #messageInput { flex: 1; background: white; border: 1px solid #b0b0b0; padding: 10px 12px; font-size: 0.85rem; }
+        button { background: #e2e2e2; border: 1px solid #a0a0a0; padding: 8px 16px; cursor: pointer; color: #222; }
+        button:hover { background: #d4d4d4; }
+        .empty-messages { font-size: 0.8rem; color: #7e7e7e; text-align: center; padding: 32px; }
+        .info-note { font-size: 0.65rem; padding: 6px 12px; background: #ececec; color: #6a6a6a; text-align: center; border-top: 1px solid #ccc; }
+        .status { font-size: 0.7rem; padding: 4px 12px; background: #f9f2e0; color: #8a6e2e; text-align: center; }
     </style>
 </head>
 <body>
 <div class="app">
-    <!-- LEFT SIDEBAR: channels + user nickname -->
     <div class="sidebar">
-        <div class="server-header">
-            <div class="server-name">⎯ bland.chat ⎯</div>
-        </div>
+        <div class="server-header"><div class="server-name">⎯ gist.chat ⎯</div></div>
         <div class="channels-section">
             <div class="channels-label">TEXT CHANNELS</div>
-            <div class="channel-item" data-channel="general">
-                <div class="channel-name"><span class="hash">#</span> general</div>
-            </div>
-            <div class="channel-item" data-channel="random">
-                <div class="channel-name"><span class="hash">#</span> random</div>
-            </div>
+            <div class="channel-item active" data-channel="main"><div class="channel-name"><span class="hash">#</span> main</div></div>
         </div>
         <div class="user-area">
             <div class="nickname-row">
                 <span class="nickname-label">nickname</span>
                 <input type="text" id="nicknameInput" maxlength="24" placeholder="anonymous">
             </div>
-            <div style="font-size:0.7rem; color:#5a5a5a;">▼ messages saved in browser</div>
         </div>
     </div>
-
-    <!-- RIGHT MAIN CHAT AREA -->
     <div class="chat-main">
         <div class="chat-header">
-            <div class="channel-title" id="currentChannelTitle">#general</div>
-            <div class="channel-topic">very bland · local storage only</div>
+            <div class="channel-title">#main (saved to .txt gist)</div>
+            <div class="channel-topic">polling every 2s · uses GitHub token</div>
         </div>
-
         <div class="messages-container" id="messagesContainer">
-            <!-- dynamic messages injected here -->
-            <div class="empty-messages">✧ no messages yet ✧<br>type something below</div>
+            <div class="empty-messages">loading messages from gist...</div>
         </div>
-
         <div class="input-area">
-            <input type="text" id="messageInput" placeholder="Type a message... (enter to send)" autocomplete="off">
+            <input type="text" id="messageInput" placeholder="Type a message... (enter to send)">
             <button id="sendBtn">Send</button>
-            <button id="clearChannelBtn" class="clear-btn">clear #</button>
+            <button id="clearBtn">clear all messages</button>
         </div>
-        <div class="info-note">
-            🧱 single-user demo · messages saved per channel (localStorage) · open in same browser only
-        </div>
+        <div class="status" id="statusMsg">connecting...</div>
+        <div class="info-note">📄 messages stored in a GitHub Gist (plain .txt) · everyone sees same chat</div>
     </div>
 </div>
 
 <script>
-    // ---------- CONFIG ----------
-    // two channels: "general", "random"
-    const CHANNELS = ['general', 'random'];
-
-    // data structure: { "general": [messages], "random": [messages] }
-    // each message: { id: string, author: string, text: string, timestamp: number, dateString: string }
-    let messagesStore = {
-        general: [],
-        random: []
-    };
-
-    let activeChannel = 'general';      // current channel
-    let currentNickname = 'guest';
-
-    // DOM elements
+    // ======================== CONFIGURATION ========================
+    // TODO: Replace with your own Gist details
+    const GIST_RAW_URL = "https://gist.github.com/Spartan41802/8d9414d39f424733158495f47dfb8dca";
+    const GIST_API_URL = "https://api.github.com/gists/8d9414d39f424733158495f47dfb8dca";   // e.g., "https://api.github.com/gists/abcdef123456"
+    const GITHUB_TOKEN = "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";        // needs 'gist' scope
+    
+    // Only one channel for simplicity (you can add more by storing separate files)
+    // ================================================================
+    
+    let currentNickname = localStorage.getItem('gistchat_nickname') || 'guest';
+    let pollingInterval = null;
+    let lastKnownContent = "";
+    
     const messagesContainer = document.getElementById('messagesContainer');
-    const currentChannelTitleSpan = document.getElementById('currentChannelTitle');
     const messageInput = document.getElementById('messageInput');
     const sendBtn = document.getElementById('sendBtn');
-    const clearChannelBtn = document.getElementById('clearChannelBtn');
+    const clearBtn = document.getElementById('clearBtn');
     const nicknameInput = document.getElementById('nicknameInput');
-
-    // helper: format timestamp
-    function formatTime(timestamp) {
-        const date = new Date(timestamp);
-        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+    const statusSpan = document.getElementById('statusMsg');
+    
+    nicknameInput.value = currentNickname;
+    
+    // Helper: update status
+    function setStatus(text, isError = false) {
+        statusSpan.textContent = text;
+        statusSpan.style.background = isError ? "#ffe0e0" : "#f9f2e0";
+        statusSpan.style.color = isError ? "#b00020" : "#8a6e2e";
+        setTimeout(() => {
+            if (statusSpan.textContent === text) {
+                statusSpan.style.background = "#f9f2e0";
+                statusSpan.style.color = "#8a6e2e";
+            }
+        }, 2000);
     }
-
-    // load from localStorage
-    function loadFromLocalStorage() {
-        const stored = localStorage.getItem('blandchat_messages');
-        if (stored) {
-            try {
-                const parsed = JSON.parse(stored);
-                // validate structure (ensuring both channels exist)
-                if (parsed && typeof parsed === 'object') {
-                    messagesStore.general = Array.isArray(parsed.general) ? parsed.general : [];
-                    messagesStore.random = Array.isArray(parsed.random) ? parsed.random : [];
-                    // basic cleanup: make sure each message has needed fields
-                    [messagesStore.general, messagesStore.random].forEach(ch => {
-                        for (let i = 0; i < ch.length; i++) {
-                            if (!ch[i].id || !ch[i].author || !ch[i].text || !ch[i].timestamp) {
-                                // if corrupt, skip but keep valid ones? safer to reinitialize? we'll filter
-                                ch.splice(i,1);
-                                i--;
-                            }
-                        }
-                    });
-                }
-            } catch(e) { console.warn(e); }
+    
+    // Parse the .txt file (each line = "author: timestamp: message")
+    // Format: "John Doe: 14:32: Hello world"
+    // We'll store as "author: HH:MM: message" – timestamp added by server when sending.
+    function parseMessagesFromText(text) {
+        if (!text.trim()) return [];
+        const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
+        const messages = [];
+        for (let line of lines) {
+            // Expected format: "Author: 12:34: Message text"
+            const firstColon = line.indexOf(':');
+            if (firstColon === -1) continue;
+            const author = line.substring(0, firstColon).trim();
+            const rest = line.substring(firstColon + 1).trim();
+            const secondColon = rest.indexOf(':');
+            if (secondColon === -1) continue;
+            const timeStr = rest.substring(0, secondColon).trim();
+            const messageText = rest.substring(secondColon + 1).trim();
+            messages.push({ author, time: timeStr, text: messageText });
         }
-        // load nickname from localStorage
-        const savedNick = localStorage.getItem('blandchat_nickname');
-        if (savedNick && savedNick.trim().length > 0) {
-            currentNickname = savedNick.trim();
-            nicknameInput.value = currentNickname;
-        } else {
-            currentNickname = 'guest';
-            nicknameInput.value = 'guest';
+        return messages;
+    }
+    
+    // Convert messages array back to .txt format
+    function messagesToText(messages) {
+        return messages.map(m => `${m.author}: ${m.time}: ${m.text}`).join('\n');
+    }
+    
+    // Fetch current gist content (read-only via raw URL, no token needed)
+    async function fetchMessagesFromGist() {
+        try {
+            const response = await fetch(GIST_RAW_URL + "?t=" + Date.now()); // cache buster
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const text = await response.text();
+            lastKnownContent = text;
+            const messages = parseMessagesFromText(text);
+            renderMessages(messages);
+            setStatus(`last update: ${new Date().toLocaleTimeString()}`);
+            return true;
+        } catch (err) {
+            console.error("Read error:", err);
+            setStatus("Failed to read gist (check raw URL)", true);
+            messagesContainer.innerHTML = '<div class="empty-messages">⚠️ Cannot read gist. Check URL / network.</div>';
+            return false;
         }
     }
-
-    // save messages to localStorage
-    function persistMessages() {
-        const toStore = {
-            general: messagesStore.general,
-            random: messagesStore.random
-        };
-        localStorage.setItem('blandchat_messages', JSON.stringify(toStore));
+    
+    // Write messages to gist (needs token)
+    async function writeMessagesToGist(messagesArray) {
+        const newContent = messagesToText(messagesArray);
+        if (newContent === lastKnownContent) return true; // no change
+        
+        const gistId = GIST_API_URL.split('/').pop();
+        const updateUrl = `https://api.github.com/gists/${gistId}`;
+        
+        try {
+            const response = await fetch(updateUrl, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `token ${GITHUB_TOKEN}`,
+                    'Accept': 'application/vnd.github.v3+json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    files: {
+                        "chatlog.txt": { content: newContent }
+                    }
+                })
+            });
+            if (!response.ok) {
+                const errData = await response.text();
+                throw new Error(`GitHub API error ${response.status}: ${errData}`);
+            }
+            lastKnownContent = newContent;
+            setStatus("message saved to gist");
+            return true;
+        } catch (err) {
+            console.error("Write error:", err);
+            setStatus("❌ Failed to write to gist – token invalid or network block", true);
+            return false;
+        }
     }
-
-    // save nickname
-    function persistNickname() {
-        localStorage.setItem('blandchat_nickname', currentNickname);
+    
+    // Add a new message
+    async function sendMessage() {
+        const text = messageInput.value.trim();
+        if (!text) return;
+        const author = currentNickname.trim() || 'guest';
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+        
+        // 1. Fetch current messages (latest)
+        const currentText = await fetch(GIST_RAW_URL + "?t=" + Date.now()).then(r => r.text()).catch(() => lastKnownContent);
+        const currentMessages = parseMessagesFromText(currentText);
+        
+        // 2. Append new message
+        currentMessages.push({ author, time: timeStr, text });
+        
+        // 3. Write back
+        const success = await writeMessagesToGist(currentMessages);
+        if (success) {
+            messageInput.value = '';
+            await fetchMessagesFromGist(); // refresh display
+        }
     }
-
-    // render current active channel messages
-    function renderMessages() {
-        const messages = messagesStore[activeChannel] || [];
+    
+    // Clear all messages (admin-like)
+    async function clearAllMessages() {
+        if (!confirm("⚠️ DELETE ALL MESSAGES FOR EVERYONE? This cannot be undone.")) return;
+        const emptyMessages = [];
+        const success = await writeMessagesToGist(emptyMessages);
+        if (success) {
+            await fetchMessagesFromGist();
+            setStatus("All messages cleared");
+        }
+    }
+    
+    // Render messages into DOM
+    function renderMessages(messages) {
         messagesContainer.innerHTML = '';
-
-        if (!messages.length) {
+        if (messages.length === 0) {
             const emptyDiv = document.createElement('div');
             emptyDiv.className = 'empty-messages';
-            emptyDiv.innerText = '✧ nothing yet · type below ✧';
+            emptyDiv.innerText = '✧ no messages yet · type below ✧';
             messagesContainer.appendChild(emptyDiv);
             return;
         }
-
-        // sort messages by timestamp (oldest first)
-        const sorted = [...messages].sort((a,b) => a.timestamp - b.timestamp);
-        for (const msg of sorted) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message';
-
-            const headerDiv = document.createElement('div');
-            headerDiv.className = 'message-header';
+        for (const msg of messages) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'message';
+            const header = document.createElement('div');
+            header.className = 'message-header';
             const authorSpan = document.createElement('span');
             authorSpan.className = 'message-author';
             authorSpan.textContent = msg.author;
             const timeSpan = document.createElement('span');
             timeSpan.className = 'message-timestamp';
-            timeSpan.textContent = formatTime(msg.timestamp);
-            headerDiv.appendChild(authorSpan);
-            headerDiv.appendChild(timeSpan);
-
+            timeSpan.textContent = msg.time;
+            header.appendChild(authorSpan);
+            header.appendChild(timeSpan);
             const textDiv = document.createElement('div');
             textDiv.className = 'message-text';
             textDiv.textContent = msg.text;
-
-            messageDiv.appendChild(headerDiv);
-            messageDiv.appendChild(textDiv);
-            messagesContainer.appendChild(messageDiv);
+            msgDiv.appendChild(header);
+            msgDiv.appendChild(textDiv);
+            messagesContainer.appendChild(msgDiv);
         }
-        // auto-scroll to bottom
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
-
-    // add a new message to current channel
-    function addMessage(text) {
-        if (!text || text.trim() === '') return false;
-        const cleanText = text.trim();
-        // get current nickname (could change live)
-        let author = currentNickname.trim();
-        if (author === '') author = 'guest';
-        const newMsg = {
-            id: Date.now() + '-' + Math.random().toString(36).substr(2, 6),
-            author: author,
-            text: cleanText,
-            timestamp: Date.now(),
-        };
-        messagesStore[activeChannel].push(newMsg);
-        persistMessages();
-        renderMessages();
-        return true;
+    
+    // Poll for new messages every 2 seconds
+    function startPolling() {
+        if (pollingInterval) clearInterval(pollingInterval);
+        fetchMessagesFromGist(); // immediate
+        pollingInterval = setInterval(() => {
+            fetchMessagesFromGist().catch(console.warn);
+        }, 2000);
     }
-
-    // clear all messages in current channel
-    function clearCurrentChannel() {
-        if (messagesStore[activeChannel].length === 0) return;
-        if (confirm(`Clear all messages in #${activeChannel}? (no undo)`)) {
-            messagesStore[activeChannel] = [];
-            persistMessages();
-            renderMessages();
-        }
-    }
-
-    // switch channel (update active, UI highlight, rerender)
-    function switchChannel(channelId) {
-        if (!CHANNELS.includes(channelId)) return;
-        activeChannel = channelId;
-        // update header title
-        currentChannelTitleSpan.textContent = `#${activeChannel}`;
-        // update active style on sidebar
-        document.querySelectorAll('.channel-item').forEach(el => {
-            const ch = el.getAttribute('data-channel');
-            if (ch === activeChannel) {
-                el.classList.add('active');
-            } else {
-                el.classList.remove('active');
-            }
-        });
-        // clear input field (no need to keep previous message)
-        messageInput.value = '';
-        renderMessages();
-    }
-
-    // update nickname from input and persist
+    
+    // Nickname handler
     function updateNickname() {
         let newNick = nicknameInput.value.trim();
         if (newNick === "") newNick = "guest";
         currentNickname = newNick;
-        nicknameInput.value = currentNickname;
-        persistNickname();
-        // no need to re-render messages, but new messages will use new nickname
-        // (optional: show toast? no toast due to bland, do nothing)
+        localStorage.setItem('gistchat_nickname', currentNickname);
+        setStatus(`nickname changed to ${currentNickname}`);
     }
-
-    // initialize demo data if both channels are empty (first load)
-    function injectSampleMessagesIfEmpty() {
-        let changed = false;
-        if (messagesStore.general.length === 0) {
-            messagesStore.general.push({
-                id: 'sample-gen-1',
-                author: 'system',
-                text: 'welcome to #general — keep it bland',
-                timestamp: Date.now() - 3600000,
-            });
-            messagesStore.general.push({
-                id: 'sample-gen-2',
-                author: 'guest',
-                text: 'very simple chat, stored in browser',
-                timestamp: Date.now() - 1800000,
-            });
-            changed = true;
-        }
-        if (messagesStore.random.length === 0) {
-            messagesStore.random.push({
-                id: 'sample-rand-1',
-                author: 'system',
-                text: 'random channel: feel free to send anything',
-                timestamp: Date.now() - 2700000,
-            });
-            changed = true;
-        }
-        if (changed) {
-            persistMessages();
-        }
-    }
-
-    // event binding and initialization
-    function init() {
-        loadFromLocalStorage();
-        injectSampleMessagesIfEmpty();
-
-        // set up sidebar channel listeners
-        document.querySelectorAll('.channel-item').forEach(el => {
-            el.addEventListener('click', (e) => {
-                const channel = el.getAttribute('data-channel');
-                if (channel) switchChannel(channel);
-            });
-        });
-
-        // send message
-        function sendCurrentMessage() {
-            const rawMsg = messageInput.value;
-            if (rawMsg && rawMsg.trim() !== '') {
-                addMessage(rawMsg);
-                messageInput.value = '';
-                messageInput.focus();
-            }
-        }
-
-        sendBtn.addEventListener('click', sendCurrentMessage);
-        messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                sendCurrentMessage();
-            }
-        });
-
-        clearChannelBtn.addEventListener('click', () => {
-            clearCurrentChannel();
-        });
-
-        nicknameInput.addEventListener('change', updateNickname);
-        nicknameInput.addEventListener('blur', updateNickname);
-
-        // set active channel highlighting and header title
-        switchChannel(activeChannel);  // will also render
-        // final sync for any nickname changes
-        updateNickname();
-    }
-
-    // start the app
-    init();
+    
+    // Event listeners
+    sendBtn.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+    clearBtn.addEventListener('click', clearAllMessages);
+    nicknameInput.addEventListener('change', updateNickname);
+    nicknameInput.addEventListener('blur', updateNickname);
+    
+    // Start the app
+    startPolling();
 </script>
 </body>
 </html>
